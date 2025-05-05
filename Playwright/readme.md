@@ -22,4 +22,4 @@ To get started with the project, make sure you have [Node.js](https://nodejs.org
 
 4. **Running Tests**
     To execute the test cases, use the following command. This will run a specific test file located in
-    ```npx playwright test ./src/tests/PL1_testcases/yaksha.spec.ts```
+    ```npx playwright test ./src/tests/PL2_testcases/yaksha.spec.ts```
