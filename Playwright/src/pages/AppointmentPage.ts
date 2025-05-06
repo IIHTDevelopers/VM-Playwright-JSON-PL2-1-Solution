@@ -193,6 +193,7 @@ export default class AppointmentPage {
    * 6. Capture and return the hospital number and phone number for verification.
    */
   async verifyAppointmentStatusChangeAfterInvoicePrint() {
+    await this.page.waitForTimeout(2000);
     await this.page.goto(
       "https://healthapp.yaksha.com/Home/Index#/Appointment/ListAppointment"
     );
@@ -209,11 +210,10 @@ export default class AppointmentPage {
     await this.page.locator("//input[@value='Male']/../span").click();
     await this.page.locator("[formcontrolname='Age']").fill("26");
     const phoneNumber = Math.floor(Math.random() * 1000000000).toString();
-    // const phoneNumber = "987654321";
     await this.page
       .locator("[formcontrolname='ContactNumber']")
       .fill(phoneNumber);
-    
+
     await this.page
       .locator("[formcontrolname='AppointmentTime']")
       .fill(appointmentTime);
@@ -253,22 +253,30 @@ export default class AppointmentPage {
       .fill(appointmentDate);
     await this.appointment.printInvoiceButton.click({ force: true });
     await this.page.locator('[class="confirm"]').click();
-    // const hospitalNumberRaw = await this.page
-    //   .locator('//div[@class="table-responsive"]/table/tbody/tr/td[2]')
-    //   .textContent();
-    // const hospitalNumber = await hospitalNumberRaw?.trim();
-    // await this.page.locator("(//button[@fdprocessedid])[1]").click();
-    const buttons = this.page.locator("//button[@fdprocessedid]");
-    if ((await buttons.count()) > 0) {
-      await buttons.first().click();
+
+    const duplicatePatient = await this.page
+      .locator('//b[contains(text(),"SURE THAT THIS IS NEW PATIENT, CLICK")]')
+      .all();
+
+    if (duplicatePatient.length > 0) {
+      await this.page
+        .locator('//button[contains(text(),"Register as New Patient")]')
+        .first()
+        .click();
+      const hospitalNumberRaw = await this.page
+        .locator('//p[text()="Hospital No: "]/strong')
+        .textContent();
+      const hospitalNumber = await hospitalNumberRaw?.trim();
+      await this.page.locator(".btn-danger").click();
+      return hospitalNumber;
+    } else {
+      const hospitalNumberRaw = await this.page
+        .locator('//p[text()="Hospital No: "]/strong')
+        .textContent();
+      const hospitalNumber = await hospitalNumberRaw?.trim();
+      await this.page.locator(".btn-danger").click();
+      return hospitalNumber;
     }
-    const hospitalNumberRaw = await this.page
-      .locator('//p[text()="Hospital No: "]/strong')
-      .textContent();
-    const hospitalNumber = await hospitalNumberRaw?.trim();
-    // await this.page.locator('[name="patientselect"]').click();
-    await this.page.locator(".btn-danger").click();
-    return hospitalNumber;
   }
 
   async getAppointmentIdOfFirstPatientWithCheckInButton() {
@@ -314,7 +322,7 @@ export default class AppointmentPage {
   }
 
   async getRandomFirstName() {
-    const randomNum = Math.floor(Math.random() * 1000); // Generates number between 0–999
+    const randomNum = Math.floor(Math.random() * 100000); // Generates number between 0–999
     return `${randomNum}First`;
   }
 }
