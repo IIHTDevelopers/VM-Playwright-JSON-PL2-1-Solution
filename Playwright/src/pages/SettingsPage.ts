@@ -36,8 +36,14 @@ export class SettingsPage {
     this.searchBar = page.locator(`input#quickFilterInput`);
     this.adt = page.locator('//a[contains(text(),"ADT")]');
     this.manageBed = page.locator('a[href="#/Settings/ADTManage/ManageBed"]');
-    this.availableEdit = page.locator('(//span[text()="Available"]/../..//a[contains(text(), "Edit")])[1]');
-    this.occupiedEdit = page.locator('(//span[text()="Occupied"]/../..//a[contains(text(), "Edit")])[1]');
+    this.availableEdit = page
+      .locator(
+        '(//span[text()="Available"]/../..//a[contains(text(), "Edit")])[1] | (//span[text()="N/A"]/../..//a[contains(text(), "Edit")])[1]'
+      )
+      .first();
+    this.occupiedEdit = page.locator(
+      '(//span[text()="Occupied"]/../..//a[contains(text(), "Edit")])[1]'
+    );
     this.helpDeskLink = page.locator('[href="#/Helpdesk"]');
     this.isActive = page.locator(
       '//label[@class="mt-checkbox mt-checkbox-outline"]//span'
@@ -176,14 +182,6 @@ export class SettingsPage {
    * 5. Click on Male Ward to verify updated status.
    */
   async verifyMaleWard() {
-    //Navigate to Help Desk Link
-    await CommonMethods.highlightElement(this.helpDeskLink);
-    await this.helpDeskLink.click();
-
-    //Check the number of male wards
-    await CommonMethods.highlightElement(this.helpDeskLink);
-    await this.helpDeskLink.click();
-
     //Navigate to Settings Link
     await CommonMethods.highlightElement(this.settingsLink);
     await this.settingsLink.click();

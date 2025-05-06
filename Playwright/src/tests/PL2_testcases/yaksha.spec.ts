@@ -260,7 +260,6 @@ async function verifyTableVisibility(page: Page) {
   await expect(table).toBeVisible({ timeout: 5000 });
 }
 
-
 async function verifyInventorySubModule(page: Page) {
   const inventory = page.locator('(//a[contains(text(),"Inventory")])[1]');
   expect(await inventory.isVisible()).toBeTruthy();
@@ -283,9 +282,11 @@ async function verifyImagingTypeAdded(page: Page) {
 async function verifyBedIsNotActive(page: Page, bedNumber: number) {
   console.log(bedNumber);
 
-  await page.locator("//input[@id='quickFilterInput']").fill(bedNumber.toString());
+  await page
+    .locator("//input[@id='quickFilterInput']")
+    .fill(bedNumber.toString());
   // await page.keyboard.down('Enter');
-  await page.keyboard.press('Enter');
+  await page.keyboard.press("Enter");
 
   const isActiveCell = await page.locator(
     `//div[@col-id="BedNumber" and text()='${bedNumber}']/../div[@col-id="IsActive"]`
@@ -304,8 +305,10 @@ async function verifyPatientExistWithHospitalNumber(
   }
 
   await page.locator('(//a[@href="#/Appointment/PatientSearch"])[2]').click();
-  await page.locator('[id="id_input_search_using_hospital_no"]').fill(hospitalNumber);
-  await page.keyboard.press('Enter');
+  await page
+    .locator('[id="id_input_search_using_hospital_no"]')
+    .fill(hospitalNumber);
+  await page.keyboard.press("Enter");
   await page.waitForTimeout(1000);
   const actualHospitalNumberRaw = await page
     .locator('//div[@col-id="PatientCode" and @role="gridcell"]')
@@ -322,7 +325,9 @@ async function verifyNursingCheckinAddedSuccessfully(page: Page) {
 }
 
 async function verifyBedStatusUpdated(page: Page) {
-  const successMessage = await page.locator('(//p[@class="main-message" and contains(text(),"Updated")])[1]');
+  const successMessage = await page.locator(
+    '(//p[@class="main-message" and contains(text(),"Updated")])[1]'
+  );
   await expect(successMessage).toBeVisible();
 }
 
